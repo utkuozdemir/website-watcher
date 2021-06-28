@@ -1,0 +1,120 @@
+---
+before:
+  hooks:
+    - go mod download
+
+builds:
+  - id: website-watcher
+    main: ./cmd/website-watcher
+    binary: website-watcher
+    ldflags:
+      - -s -w
+      - -X github.com/prometheus/common/version.Version={{.Version}}
+      - -X github.com/prometheus/common/version.Revision={{.Commit}}
+      - -X github.com/prometheus/common/version.Branch={{.Branch}}
+      - -X github.com/prometheus/common/version.BuildUser=goreleaser
+      - -X github.com/prometheus/common/version.BuildDate={{.Date}}
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm
+      - arm64
+      - 386
+    goarm:
+     - 7
+    ignore:
+      - goos: windows
+        goarch: arm
+      - goos: windows
+        goarch: arm64
+      - goos: darwin
+        goarch: arm
+      - goos: darwin
+        goarch: arm64
+      - goos: darwin
+        goarch: 386
+      - goos: linux
+        goarch: 386
+
+archives:
+  - id: website-watcher-archive
+    builds:
+      - website-watcher
+    replacements:
+      386: i386
+      amd64: x86_64
+    format_overrides:
+      - goos: windows
+        format: zip
+    files: 
+      - LICENSE
+
+checksum:
+  name_template: checksums.txt
+  algorithm: sha256
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
+      - '^cicd:'
+      - '^refactor:'
+      - '^docker:'
+      - Merge pull request
+      - Merge branch
+      - go mod tidy
+
+dockers:
+  - image_templates:
+      - docker.io/utkuozdemir/website-watcher:{{ .Version }}-amd64
+    use_buildx: true
+    dockerfile: Dockerfile
+    build_flag_templates:
+      - --platform=linux/amd64
+  - image_templates:
+      - docker.io/utkuozdemir/website-watcher:{{ .Version }}-arm64
+    use_buildx: true
+    goarch: arm64
+    dockerfile: Dockerfile
+    build_flag_templates:
+      - --platform=linux/arm64
+  - image_templates:
+      - docker.io/utkuozdemir/website-watcher:{{ .Version }}-armv7
+    use_buildx: true
+    goarch: arm
+    goarm: 7
+    dockerfile: Dockerfile
+    build_flag_templates:
+      - --platform=linux/arm/v7
+
+docker_manifests:
+  - name_template: docker.io/utkuozdemir/website-watcher:{{ .Version }}
+    image_templates:
+      - docker.io/utkuozdemir/website-watcher:{{ .Version }}-amd64
+      - docker.io/utkuozdemir/website-watcher:{{ .Version }}-arm64
+      - docker.io/utkuozdemir/website-watcher:{{ .Version }}-armv7
+
+# To test docker image push, uncomment the following and run
+# goreleaser release --skip-validate --rm-dist --debug
+#release:
+#  disable: true
+
+#scoop:
+#  bucket:
+#    owner: utkuozdemir
+#    name: scoop-website-watcher
+#    token: "{{ .Env.PRIVATE_ACCESS_TOKEN }}"
+#  commit_author:
+#    name: Utku Ozdemir
+#    email: uoz@protonmail.com
+#  commit_msg_template: "Scoop update for {{ .ProjectName }} version {{ .Tag }}"
+#  homepage: https://github.com/utkuozdemir/website-watcher
+#  description: Watch websites, get notifications.
+#  license: MIT
