@@ -1,7 +1,6 @@
 package watcher
 
 import (
-	"fmt"
 	"github.com/mxschmitt/playwright-go"
 	log "github.com/sirupsen/logrus"
 	"github.com/utkuozdemir/website-watcher/internal/notification"
@@ -84,7 +83,7 @@ func (w *watcher) watch(wg *sync.WaitGroup, browser playwright.Browser, website 
 
 		delay := website.Delay()
 		websiteLogger.
-			WithField("delay", fmt.Sprintf("%s", delay)).
+			WithField("delay", delay.String()).
 			Info("Sleeping...")
 		time.Sleep(delay)
 	}
