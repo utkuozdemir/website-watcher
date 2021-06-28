@@ -1,5 +1,9 @@
 # website-watcher
 
+[![build](https://github.com/utkuozdemir/website-watcher/actions/workflows/build.yml/badge.svg)](https://github.com/utkuozdemir/website-watcher/actions/workflows/build.yml)
+[![Go Report Card](https://goreportcard.com/badge/github.com/utkuozdemir/website-watcher)](https://goreportcard.com/report/github.com/utkuozdemir/website-watcher)
+[![GitHub license](https://img.shields.io/github/license/utkuozdemir/website-watcher)](https://github.com/utkuozdemir/website-watcher/blob/master/LICENSE)
+
 Watch websites, get notifications. Simple as that.  
 Can be useful for stock tracking.
 
