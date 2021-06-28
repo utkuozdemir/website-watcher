@@ -104,6 +104,7 @@ func main() {
 			doesNotContainAnd200Condition("Leider nicht verfügbar"),
 			handler,
 		),
+
 	}
 
 	w := watcher.New(websites)
